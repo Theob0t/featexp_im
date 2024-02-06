@@ -98,7 +98,7 @@ def get_grouped_data(input_data, feature, target_col, bins, cuts=0):
         return grouped
 
 
-def draw_plots(input_data, feature, target_col, trend_correlation=None):
+def draw_plots(input_data, feature, target_col, figname, trend_correlation=None):
     """
     Draws univariate dependence plots for a feature.
     
@@ -106,6 +106,7 @@ def draw_plots(input_data, feature, target_col, trend_correlation=None):
     target mean.
     :param feature: feature column name.
     :param target_col: target column.
+    :param figname: path to save figure as png
     :param trend_correlation: correlation between train and test trends 
     of feature wrt target.
     :return: Draws trend plots for feature.
@@ -157,6 +158,7 @@ def draw_plots(input_data, feature, target_col, trend_correlation=None):
     ax2.set_ylabel("Bin-wise sample size")
     plt.title("Samples in bins of " + feature)
     plt.tight_layout()
+    plt.savefig(figname)
     plt.show()
 
 
@@ -241,16 +243,18 @@ def get_trend_correlation(grouped, grouped_test, feature, target_col):
     return trend_correlation
 
 
-def univariate_plotter(feature, data, target_col, bins=10, data_test=0):
+def univariate_plotter(feature, data, target_col, figname, bins=10, data_test=0):
     """
     Calls the draw plot function and editing around the plots.
     
     :param feature: feature column name.
     :param data: dataframe containing features and target columns.
     :param target_col: target column name.
+    :param figname: path to save figure as png
     :param bins: number of bins to be created from continuous feature.
     :param data_test: test data which has to be compared with input data 
     for correlation.
+    :param figname: path to save figure as png
     :return: grouped data if only train passed, else (grouped train 
     data, grouped test data).
     """
@@ -277,7 +281,7 @@ def univariate_plotter(feature, data, target_col, bins=10, data_test=0):
             print(" {:^100} ".format("Train data plots"))
 
             draw_plots(
-                input_data=grouped, feature=feature, target_col=target_col
+                input_data=grouped, feature=feature, target_col=target_col, figname=figname
             )
             print(" {:^100} ".format("Test data plots"))
 
@@ -285,11 +289,12 @@ def univariate_plotter(feature, data, target_col, bins=10, data_test=0):
                 input_data=grouped_test,
                 feature=feature,
                 target_col=target_col,
+                figname=figname,
                 trend_correlation=trend_corr,
             )
         else:
             draw_plots(
-                input_data=grouped, feature=feature, target_col=target_col
+                input_data=grouped, feature=feature, target_col=target_col,figname=figname
             )
         print(
             "----------------------------------------------------------"
@@ -303,7 +308,7 @@ def univariate_plotter(feature, data, target_col, bins=10, data_test=0):
 
 
 def get_univariate_plots(
-    data, target_col, features_list=0, bins=10, data_test=0
+    data, target_col,figname, features_list=0, bins=10, data_test=0
 ):
     """
     Creates univariate dependence plots for features in the dataset
@@ -332,6 +337,7 @@ def get_univariate_plots(
                 data=data,
                 target_col=target_col,
                 bins=bins,
+                figname=figname,
                 data_test=data_test,
             )
 
