@@ -98,7 +98,7 @@ def get_grouped_data(input_data, feature, target_col, bins, cuts=0):
         return grouped
 
 
-def draw_plots(input_data, feature, target_col, figname, trend_correlation=None):
+def draw_plots(input_data, feature, target_col, trend_correlation=None):
     """
     Draws univariate dependence plots for a feature.
     
@@ -106,7 +106,6 @@ def draw_plots(input_data, feature, target_col, figname, trend_correlation=None)
     target mean.
     :param feature: feature column name.
     :param target_col: target column.
-    :param figname: path to save figure as png
     :param trend_correlation: correlation between train and test trends 
     of feature wrt target.
     :return: Draws trend plots for feature.
@@ -158,9 +157,8 @@ def draw_plots(input_data, feature, target_col, figname, trend_correlation=None)
     ax2.set_ylabel("Bin-wise sample size")
     plt.title("Samples in bins of " + feature)
     plt.tight_layout()
-    plt.savefig(figname)
     plt.show()
-
+return plt
 
 def get_trend_changes(grouped_data, feature, target_col, threshold=0.03):
     """
@@ -254,7 +252,6 @@ def univariate_plotter(feature, data, target_col, figname, bins=10, data_test=0)
     :param bins: number of bins to be created from continuous feature.
     :param data_test: test data which has to be compared with input data 
     for correlation.
-    :param figname: path to save figure as png
     :return: grouped data if only train passed, else (grouped train 
     data, grouped test data).
     """
@@ -280,21 +277,27 @@ def univariate_plotter(feature, data, target_col, figname, bins=10, data_test=0)
             )
             print(" {:^100} ".format("Train data plots"))
 
-            draw_plots(
-                input_data=grouped, feature=feature, target_col=target_col, figname=figname
+            p1=draw_plots(
+                input_data=grouped, feature=feature, target_col=target_col
             )
             print(" {:^100} ".format("Test data plots"))
 
-            draw_plots(
+            p2=draw_plots(
                 input_data=grouped_test,
                 feature=feature,
                 target_col=target_col,
-                figname=figname,
                 trend_correlation=trend_corr,
             )
+            plt.close('all)
+            fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+            p1
+            p2
+            plt.tight_layout()
+            plt.savefig(figname)
+            
         else:
             draw_plots(
-                input_data=grouped, feature=feature, target_col=target_col,figname=figname
+                input_data=grouped, feature=feature, target_col=target_col
             )
         print(
             "----------------------------------------------------------"
